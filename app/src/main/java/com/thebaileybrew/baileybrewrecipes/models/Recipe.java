@@ -1,15 +1,20 @@
 package com.thebaileybrew.baileybrewrecipes.models;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+
+import com.thebaileybrew.baileybrewrecipes.database.ListIngredientConverter;
+import com.thebaileybrew.baileybrewrecipes.database.ListTypeConverter;
 
 import java.util.List;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 @Entity(tableName = "recipes")
 public class Recipe {
 
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "recipe_id")
     private int recipeId;
     @ColumnInfo(name = "recipe_name")
@@ -17,9 +22,9 @@ public class Recipe {
     @ColumnInfo(name = "recipe_image")
     private String recipeImage;
     @ColumnInfo(name = "recipe_ingredients")
-    private List<Ingredient> recipeIngredients;
+    private List<Ingredient> recipeIngredients = null;
     @ColumnInfo(name = "recipe_steps")
-    private List<Step> steps;
+    private List<Step> steps = null;
     @ColumnInfo(name = "recipe_serving")
     private int recipeServing;
 

@@ -1,7 +1,8 @@
 package com.thebaileybrew.baileybrewrecipes;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.nfc.Tag;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecipeCardRecycler extends RecyclerView.Adapter<RecipeCardRecycler.ViewHolder> {
+    private static final String TAG = RecipeCardRecycler.class.getSimpleName();
 
     private final LayoutInflater layoutInflater;
     private List<Recipe> recipeCollection;
@@ -43,8 +45,14 @@ public class RecipeCardRecycler extends RecyclerView.Adapter<RecipeCardRecycler.
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         final Recipe recipe = recipeCollection.get(position);
         viewHolder.recipeTitle.setText(recipe.getRecipeName());
-        viewHolder.recipeServings.setText(recipe.getRecipeServing());
+        Log.e(TAG, "onBindViewHolder: recipe_servings =" + recipe.getRecipeServing() );
+        viewHolder.recipeServings.setText(String.valueOf(recipe.getRecipeServing()));
 
+    }
+
+    public void setRecipeCollection(List<Recipe> recipeCollection) {
+        this.recipeCollection = recipeCollection;
+        notifyDataSetChanged();
     }
 
     @Override
