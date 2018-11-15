@@ -4,9 +4,10 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
+        android:id="@+id/menu_icon"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/restaurant_icon"
+        android:src="@drawable/menu_icon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

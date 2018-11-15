@@ -13,10 +13,16 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.thebaileybrew.baileybrewrecipes.database.RecipeRepository;
 import com.thebaileybrew.baileybrewrecipes.dummy.DummyContent;
 import com.thebaileybrew.baileybrewrecipes.models.Recipe;
+import com.thebaileybrew.baileybrewrecipes.models.Step;
+import com.thebaileybrew.baileybrewrecipes.utils.DisplayMetricsUtils;
+import com.thebaileybrew.baileybrewrecipes.utils.objects.SliderLayoutManager;
+import com.thebaileybrew.baileybrewrecipes.utils.objects.SliderViewHolder;
 
+import java.util.List;
 import java.util.Objects;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A fragment representing a single Recipe detail screen.
@@ -54,7 +60,6 @@ public class RecipeDetailFragment extends Fragment {
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) this.getActivity().findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mRecipe.getRecipeName());
-                Log.e(TAG, "onCreate: list size: " + mRecipe.getSteps().get(3).getStepShortDescription() );
             }
         }
     }
@@ -62,11 +67,29 @@ public class RecipeDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
+        final View rootView = inflater.inflate(R.layout.recipe_detail, container, false);
 
         // Show the recipe steps via Recycler Step Counter.
         if (mRecipe != null) {
-            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(mRecipe.getRecipeName());
+            List<Step> allSteps = mRecipe.getSteps();
+            Log.e(TAG, "onCreate: step size: " + allSteps.size() );
+            RecyclerView stepCounterRecycler = rootView.findViewById(R.id.recycler_step_counter);
+            int recyclerPadding = DisplayMetricsUtils.getScreenWidth(BaileyBrewRecipes.getContext()) / 2
+                    - DisplayMetricsUtils.displayToPixel(BaileyBrewRecipes.getContext(), 12);
+            stepCounterRecycler.setPadding(recyclerPadding,0, recyclerPadding, 0);
+            SliderLayoutManager layoutManager =
+                    new SliderLayoutManager(BaileyBrewRecipes.getContext());
+            SliderViewHolder recyclerAdapter =
+                    new SliderViewHolder(BaileyBrewRecipes.getContext(), allSteps, new SliderViewHolder.SliderClickHandler() {
+                        @Override
+                        public void onClick(View view, Step step) {
+                            Log.e(TAG, "onClick: current step" + step.getStepId() );
+                            ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(step.getStepShortDescription());
+                        }
+                    });
+            recyclerAdapter.setSteps(allSteps);
+            stepCounterRecycler.setLayoutManager(layoutManager);
+            stepCounterRecycler.setAdapter(recyclerAdapter);
         }
 
         return rootView;

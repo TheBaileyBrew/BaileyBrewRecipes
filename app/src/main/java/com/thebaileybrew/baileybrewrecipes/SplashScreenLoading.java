@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import com.thebaileybrew.baileybrewrecipes.database.RecipeRepository;
 import com.thebaileybrew.baileybrewrecipes.utils.JsonUtils;
@@ -24,6 +27,10 @@ public class SplashScreenLoading extends AppCompatActivity {
 
     private Runnable loadDB;
     private Runnable noLoadDB;
+    private Runnable reqIntent;
+
+    private ImageView menuIcon;
+    private Animation animCycle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,8 @@ public class SplashScreenLoading extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         final RecipeRepository recipeRepository = new RecipeRepository(getApplication());
         setRunnables(recipeRepository);
+        menuIcon = findViewById(R.id.menu_icon);
+        animCycle = AnimationUtils.loadAnimation(BaileyBrewRecipes.getContext(), R.anim.anim_spin);
 
 
         SharedPreferences sharedPrefs = getSharedPreferences(RECIPE_PREFERENCE_LOAD, MODE_PRIVATE);
@@ -41,14 +50,14 @@ public class SplashScreenLoading extends AppCompatActivity {
         if (sharedPrefs.getBoolean(RECIPE_INITIAL_LOAD, true)) {
             prefsEditor.putBoolean(RECIPE_INITIAL_LOAD, false);
             Log.e(TAG, "onCreate: yes initial load" );
-            new Handler().postDelayed(loadDB,SPLASH_DELAY);
+            new Handler().postDelayed(loadDB,0);
 
         } else {
             Log.e(TAG, "onCreate: no initial load" );
-            new Handler().postDelayed(noLoadDB, FLASH_SPLASH_DELAY);
+            new Handler().postDelayed(noLoadDB,0);
         }
         Log.e(TAG, "onCreate: requesting intent");
-        requestIntent();
+        new Handler().postDelayed(reqIntent, SPLASH_DELAY);
     }
 
     public void setRunnables(final RecipeRepository recipeRepository) {
@@ -56,12 +65,20 @@ public class SplashScreenLoading extends AppCompatActivity {
             @Override
             public void run() {
                 JsonUtils.extractJsonDataToRoom(loadJsonFromAsset(), recipeRepository);
+                menuIcon.startAnimation(animCycle);
             }
         };
         noLoadDB = new Runnable() {
             @Override
             public void run() {
                 JsonUtils.extractJsonDataToRoom(loadJsonFromAsset(), recipeRepository);
+                menuIcon.startAnimation(animCycle);
+            }
+        };
+        reqIntent = new Runnable() {
+            @Override
+            public void run() {
+                requestIntent();
             }
         };
     }

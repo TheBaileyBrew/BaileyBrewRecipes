@@ -42,6 +42,7 @@ public class JsonUtils {
                 String RECIPE_INGREDIENT_LIST = "ingredients";
                 JSONArray jsonIngredientList = jsonObject.getJSONArray(RECIPE_INGREDIENT_LIST);
                 for (int ing = 0; ing < jsonIngredientList.length(); ing++) {
+                    //recipeIngredients.clear();
                     JSONObject jsonIngredientObject = jsonIngredientList.getJSONObject(ing);
                     Ingredient currentingredient = new Ingredient();
                     String RECIPE_INGREDIENT_NAME = "ingredient";
@@ -56,6 +57,8 @@ public class JsonUtils {
                 String RECIPE_STEPS_LIST = "steps";
                 JSONArray jsonStepList = jsonObject.getJSONArray(RECIPE_STEPS_LIST);
                 for (int steps = 0; steps < jsonStepList.length(); steps++) {
+                    //recipeSteps.clear();
+                    Log.e(TAG, "extractJsonDataToRoom: steps length: " + jsonStepList.length() );
                     JSONObject jsonStepObject = jsonStepList.getJSONObject(steps);
                     Step currentStep = new Step();
                     String RECIPE_STEP_ID = "id";
@@ -76,6 +79,7 @@ public class JsonUtils {
                 currentRecipe.setRecipeIngredients(recipeIngredients);
                 currentRecipe.setSteps(recipeSteps);
                 repository.insertRecipe(currentRecipe);
+
 
 
             }

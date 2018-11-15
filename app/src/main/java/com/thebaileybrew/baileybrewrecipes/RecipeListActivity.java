@@ -70,7 +70,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeCardR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
         recipeImagePath = findViewById(R.id.recipe_image_holder);
-        setTransitionAnimations();
+
 
         if (findViewById(R.id.recipe_detail_container) != null) {
             // The detail container view will be present only in the
@@ -85,11 +85,6 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeCardR
         setupRecyclerView((RecyclerView) recyclerView);
     }
 
-    private void setTransitionAnimations() {
-        scaleAndShiftUp = AnimationUtils.loadAnimation(this, R.anim.anim_scale_in);
-        scaleAndShiftDown = AnimationUtils.loadAnimation(this, R.anim.anim_scale_out);
-
-    }
 
     private void setupRecyclerView(@NonNull final RecyclerView recyclerView) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
@@ -98,8 +93,7 @@ public class RecipeListActivity extends AppCompatActivity implements RecipeCardR
         recipes = recipeRepository.getRecipes(recipeCardRecycler);
         recyclerView.setAdapter(recipeCardRecycler);
         recyclerView.setLayoutManager(linearLayoutManager);
-
-
+        recipeCardRecycler.notifyDataSetChanged();
     }
 
     @Override
