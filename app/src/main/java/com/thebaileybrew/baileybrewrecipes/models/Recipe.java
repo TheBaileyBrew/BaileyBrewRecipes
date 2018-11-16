@@ -14,7 +14,7 @@ import androidx.room.TypeConverters;
 @Entity(tableName = "recipes")
 public class Recipe {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "recipe_id")
     private int recipeId;
     @ColumnInfo(name = "recipe_name")

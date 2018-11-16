@@ -17,7 +17,7 @@ public class ListIngredientConverter {
     @TypeConverter
     public static List<Ingredient> stringToList(String json) {
         Gson gson = new Gson();
-        Type type = new TypeToken<List<Step>>() {}.getType();
+        Type type = new TypeToken<List<Ingredient>>() {}.getType();
         List<Ingredient> ingredients = gson.fromJson(json, type);
         return ingredients;
     }

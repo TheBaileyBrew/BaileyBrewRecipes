@@ -47,7 +47,6 @@ public class JsonUtils {
                     Ingredient currentingredient = new Ingredient();
                     String RECIPE_INGREDIENT_NAME = "ingredient";
                     currentingredient.setIngredientName(jsonIngredientObject.getString(RECIPE_INGREDIENT_NAME));
-                    Log.e(TAG, "extractJsonDataToRoom: ing name= " + currentingredient.getIngredientName() );
                     String RECIPE_INGREDIENT_MEASURE = "measure";
                     currentingredient.setIngredientMeasure(jsonIngredientObject.getString(RECIPE_INGREDIENT_MEASURE));
                     String RECIPE_INGREDIENT_QTY = "quantity";
@@ -79,6 +78,7 @@ public class JsonUtils {
                 currentRecipe.setRecipeIngredients(recipeIngredients);
                 currentRecipe.setSteps(recipeSteps);
                 repository.insertRecipe(currentRecipe);
+                Log.e(TAG, "extractJsonDataToRoom: current id, name:" + recipeID + " " + recipeName + " " + recipeIngredients.size() );
 
 
 

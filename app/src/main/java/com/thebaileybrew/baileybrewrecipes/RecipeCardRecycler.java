@@ -45,7 +45,6 @@ public class RecipeCardRecycler extends RecyclerView.Adapter<RecipeCardRecycler.
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         final Recipe recipe = recipeCollection.get(position);
         viewHolder.recipeTitle.setText(recipe.getRecipeName());
-        Log.e(TAG, "onBindViewHolder: recipe_servings =" + recipe.getRecipeServing() );
         viewHolder.recipeServings.setText(String.valueOf(recipe.getRecipeServing()));
 
     }

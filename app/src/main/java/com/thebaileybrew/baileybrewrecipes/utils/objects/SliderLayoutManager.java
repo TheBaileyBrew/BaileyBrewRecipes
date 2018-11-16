@@ -15,12 +15,12 @@ public class SliderLayoutManager extends LinearLayoutManager {
     private RecyclerView recyclerView;
 
     public interface OnItemSelectedListener {
-        void onItemSelected(int var1);
+        void onItemSelected(int position);
     }
 
-    public SliderLayoutManager(Context context) {
+    public SliderLayoutManager(Context context, OnItemSelectedListener callbackListener) {
         super(context);
-        callbackListener = null;
+        this.callbackListener = callbackListener;
         this.setOrientation(RecyclerView.HORIZONTAL);
     }
 
@@ -69,7 +69,7 @@ public class SliderLayoutManager extends LinearLayoutManager {
             View childView = this.getChildAt(i);
             float childMid = (float) (this.getDecoratedLeft(childView) + this.getDecoratedRight(childView)) / 2.0f;
             float distanceFromCenter = Math.abs(mid - childMid);
-            float scale = (float) 1 - (float)Math.sqrt((double)(distanceFromCenter / (float) this.getWidth())) * 0.66f;
+            float scale = (float) 1 - (float)Math.sqrt((double)(distanceFromCenter / (float) this.getWidth())) * 0.96f;
             childView.setScaleX(scale);
             childView.setScaleY(scale);
         }

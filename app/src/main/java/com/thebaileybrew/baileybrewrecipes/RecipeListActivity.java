@@ -18,10 +18,6 @@ import com.squareup.picasso.Picasso;
 import com.thebaileybrew.baileybrewrecipes.database.RecipeRepository;
 import com.thebaileybrew.baileybrewrecipes.dummy.DummyContent;
 import com.thebaileybrew.baileybrewrecipes.models.Recipe;
-import com.transitionseverywhere.Fade;
-import com.transitionseverywhere.TransitionManager;
-import com.transitionseverywhere.TransitionSet;
-import com.transitionseverywhere.extra.Scale;
 
 import java.io.IOException;
 import java.util.List;
