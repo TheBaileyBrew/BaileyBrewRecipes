@@ -30,6 +30,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.thebaileybrew.baileybrewrecipes.database.RecipeRepository;
 import com.thebaileybrew.baileybrewrecipes.dummy.DummyContent;
@@ -43,6 +44,8 @@ import com.thebaileybrew.baileybrewrecipes.utils.objects.SliderViewHolder;
 import java.util.List;
 import java.util.Objects;
 
+import javax.security.auth.login.LoginException;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -54,7 +57,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * in two-pane mode (on tablets) or a {@link RecipeDetailActivity}
  * on handsets.
  */
-public class RecipeDetailFragment extends Fragment {
+public class RecipeDetailFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = RecipeDetailFragment.class.getSimpleName();
 
     public static final String ARG_ITEM_ID = "recipe_id";
@@ -66,10 +69,15 @@ public class RecipeDetailFragment extends Fragment {
     private SimpleExoPlayer mExoPlayer;
     private PlayerView mExoPlayerView;
 
+    private List<Step> allSteps;
+    private List<Ingredient> allIngredients;
     private LinearLayout layoutBottomSheet;
     private RecyclerView ingredientList;
     private BottomSheetBehavior sheetBehavior;
     private FloatingActionButton fab;
+    private MaterialButton navLeft, navRight;
+    private SliderViewHolder recyclerAdapter;
+    private SliderLayoutManager layoutManager;
 
 
     /**
@@ -91,6 +99,7 @@ public class RecipeDetailFragment extends Fragment {
             int recipeId = getArguments().getInt(ARG_ITEM_ID);
             Log.e(TAG, "onCreate: id: " + recipeId );
             mRecipe = recipeRepository.getSingleRecipe(recipeId);
+            setupButtons();
             fab = (FloatingActionButton) this.getActivity().findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,6 +148,13 @@ public class RecipeDetailFragment extends Fragment {
         }
     }
 
+    private void setupButtons() {
+        navLeft = (MaterialButton) this.getActivity().findViewById(R.id.navigate_prev);
+        navRight = (MaterialButton) this.getActivity().findViewById(R.id.navigate_next);
+        navLeft.setOnClickListener(this);
+        navRight.setOnClickListener(this);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -177,15 +193,15 @@ public class RecipeDetailFragment extends Fragment {
                     ingEndValue = 38;
                     break;
             }
-            final List<Step> allSteps = mRecipe.getSteps().subList(startValue,endValue);
-            List<Ingredient> allIngredients = mRecipe.getRecipeIngredients().subList(ingValue,ingEndValue);
+            allSteps = mRecipe.getSteps().subList(startValue,endValue);
+            allIngredients = mRecipe.getRecipeIngredients().subList(ingValue,ingEndValue);
             Log.e(TAG, "onCreate: step size: " + allSteps.size() );
             Log.e(TAG, "onCreate: ingredients: " + allIngredients.size());
             final RecyclerView stepCounterRecycler = rootView.findViewById(R.id.recycler_step_counter);
             int recyclerPadding = DisplayMetricsUtils.getScreenWidth(BaileyBrewRecipes.getContext()) / 2
                     - DisplayMetricsUtils.displayToPixel(BaileyBrewRecipes.getContext(), 50);
             stepCounterRecycler.setPadding(recyclerPadding,0, recyclerPadding, 0);
-            SliderLayoutManager layoutManager =
+            layoutManager =
                     new SliderLayoutManager(BaileyBrewRecipes.getContext(), new SliderLayoutManager.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(int position) {
@@ -201,7 +217,7 @@ public class RecipeDetailFragment extends Fragment {
                             initializeExoPlayer(selectedStep);
                         }
                     });
-            SliderViewHolder recyclerAdapter =
+            recyclerAdapter =
                     new SliderViewHolder(BaileyBrewRecipes.getContext(), allSteps, new SliderViewHolder.SliderClickHandler() {
                         @Override
                         public void onClick(View view, Step step) {
@@ -214,6 +230,7 @@ public class RecipeDetailFragment extends Fragment {
                             int position = stepCounterRecycler.getChildLayoutPosition(view);
                             currentStep = step;
                             stepCounterRecycler.smoothScrollToPosition(position);
+                            ((TextView) rootView.findViewById(R.id.step_title)).setText(step.getStepShortDescription());
                             ((TextView) rootView.findViewById(R.id.recipe_detail)).setText(step.getFullDescription());
                             initializeExoPlayer(step);
                         }
@@ -281,4 +298,35 @@ public class RecipeDetailFragment extends Fragment {
         releasePlayer();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.navigate_next:
+                if (currentStep == null) {
+                    Log.e(TAG, "onClick: select step first");
+                } else {
+                    if (currentStep.getStepId() != allSteps.size()) {
+                        //TODO: Advance One
+                        currentStep = allSteps.get(currentStep.getStepId() + 1);
+                        layoutManager.scrollToPosition(currentStep.getStepId());
+                        recyclerAdapter.notifyDataSetChanged();
+                        //TODO: Logic to advance the UI view (add callback listener in Adapter? ViewHolder?)
+                    } else if (currentStep.getStepId() == allSteps.size()) {
+                        //TODO: Instantiate Konfetti
+                    }
+                }
+                break;
+            case R.id.navigate_prev:
+                if(currentStep.getStepId() == 0) {
+                    //TODO: Dialog to state that you're on the first item
+                } else {
+                    //TODO: Reverse One
+                    currentStep = allSteps.get(currentStep.getStepId() - 1);
+                    layoutManager.scrollToPosition(currentStep.getStepId());
+                    recyclerAdapter.notifyDataSetChanged();
+                    //TODO: Logic to advance the UI view (add callback listener in Adapter? ViewHolder?)
+                }
+                break;
+        }
+    }
 }

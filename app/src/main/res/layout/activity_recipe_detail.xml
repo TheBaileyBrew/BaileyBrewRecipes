@@ -66,6 +66,7 @@
         app:layout_anchorGravity="top|end"
         app:srcCompat="@android:drawable/stat_notify_chat" />
 
+    <include layout="@layout/activity_navigate_steps" />
     <include layout="@layout/ingredient_bottom_sheet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
